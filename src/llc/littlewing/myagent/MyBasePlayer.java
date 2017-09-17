@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.aiwolf.client.lib.AttackContentBuilder;
 import org.aiwolf.client.lib.Content;
+import org.aiwolf.client.lib.VoteContentBuilder;
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Judge;
 import org.aiwolf.common.data.Player;
@@ -19,7 +21,10 @@ import org.aiwolf.common.net.GameInfo;
 import org.aiwolf.common.net.GameSetting;
 
 /**
- * Base Class
+ * BasePlayser  Class
+ * 人狼本を写経しただけ
+ * @author Masaki Kan
+ * @version 0.1
  */
 public class MyBasePlayer implements Player {
 
@@ -201,6 +206,7 @@ public class MyBasePlayer implements Player {
 		talkListHead = currentGameInfo.getTalkList().size();
 	}
 
+
 	/**
 	 * 追放されたエージェントを登録
 	 *
@@ -231,27 +237,91 @@ public class MyBasePlayer implements Player {
 
 	@Override
 	public void dayStart() {
+		// fieldの初期化と前日の追放・襲撃の結果の登録
+		canTalk = true;
+		canWhisper = false;
+		if ( currentGameInfo.getRole() == Role.WEREWOLF ) {
+			canWhisper = true;
+		}
+		talkQueue.clear();
+		whisperQueue.clear();
+		declaredVoteCandidate = null;
+		voteCandidate = null;
+		declaredAttackVoteCandidate = null;
+		attackVoteCandidate = null;
+		talkListHead = 0;
+		// 前日に追放されたエージェントを登録
+		addExecutedAgent(currentGameInfo.getExecutedAgent());
+		// 昨夜死亡した（襲撃された）エージェントを登録
+		if (!currentGameInfo.getLastDeadAgentList().isEmpty()) {
+			addKilledAgent(currentGameInfo.getLastDeadAgentList().get(0));
+		}
+
+	}
+
+
+	/**
+	 * @param agent
+	 */
+	private void addKilledAgent(Agent killedAgent) {
+		// TODO 自動生成されたメソッド・スタブ
+		if( killedAgent != null) {
+			aliveOthers.remove(killedAgent);
+			if(!killedAgents.contains(killedAgent)) {
+				killedAgents.add(killedAgent);
+			}
+		}
+
+	}
+
+	/**
+	 *投票先候補を選び voteCandiateにセットする
+	 */
+	protected void chooseVoteCandidate() {
 
 	}
 
 	@Override
 	public String talk() {
-		return null;
+		chooseVoteCandidate();
+		if (voteCandidate != null && voteCandidate != declaredVoteCandidate) {
+			talkQueue.offer(new Content(new VoteContentBuilder(voteCandidate)));
+			declaredVoteCandidate = voteCandidate;
+		}
+		return talkQueue.isEmpty() ? Talk.SKIP : talkQueue.poll().getText();
 	}
+
+	/**
+	 * 襲撃先候補を選びattackVoteCandidateにセットする
+	 */
+	protected void chooseAttackVoteCandidate() {
+
+	}
+
 
 	@Override
 	public String whisper() {
-		return null;
+		chooseAttackVoteCandidate();
+		if(attackVoteCandidate != null && attackVoteCandidate != declaredAttackVoteCandidate) {
+			whisperQueue.offer(new Content(new AttackContentBuilder(attackVoteCandidate)));
+			declaredAttackVoteCandidate = attackVoteCandidate;
+		}
+		return whisperQueue.isEmpty() ? Talk.SKIP : whisperQueue.poll().getText();
 	}
 
 	@Override
 	public Agent vote() {
-		return null;
+		canTalk = false;
+		chooseVoteCandidate();
+		return voteCandidate;
 	}
 
 	@Override
 	public Agent attack() {
-		return null;
+		canWhisper = false;
+		chooseAttackVoteCandidate();
+		canWhisper = true;
+		return attackVoteCandidate;
 	}
 
 	@Override
