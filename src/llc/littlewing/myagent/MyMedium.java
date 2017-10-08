@@ -20,13 +20,13 @@ import java.util.Map;
  */
 public class MyMedium extends MyVillager {
     // 何日目にカミングアウトするか
-    int comingoutDay;
+    private int comingoutDay;
     // カミングアウト済みかどうか
-    boolean isCameout;
+    private boolean isCameout;
     // 報告待ち霊媒結果の待ち行列
-    Deque<Judge> identQueue = new LinkedList<>();
+    private Deque<Judge> identQueue = new LinkedList<>();
     // これまでの霊媒結果をエージェントと種別のペアの形で格納
-    Map<Agent, Species> myIdentMap = new HashMap<>();
+    private Map<Agent, Species> myIdentMap = new HashMap<>();
 
     @Override
     public void initialize(GameInfo gameinfo, GameSetting gameSetting){

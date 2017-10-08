@@ -239,10 +239,7 @@ public class MyBasePlayer implements Player {
 	public void dayStart() {
 		// fieldの初期化と前日の追放・襲撃の結果の登録
 		canTalk = true;
-		canWhisper = false;
-		if ( currentGameInfo.getRole() == Role.WEREWOLF ) {
-			canWhisper = true;
-		}
+		canWhisper = currentGameInfo.getRole() == Role.WEREWOLF;
 		talkQueue.clear();
 		whisperQueue.clear();
 		declaredVoteCandidate = null;

@@ -1,6 +1,3 @@
-/**
- *
- */
 package llc.littlewing.myagent;
 
 import java.util.ArrayList;
