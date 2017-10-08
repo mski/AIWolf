@@ -38,7 +38,7 @@ public class MyBasePlayer implements Player {
 	boolean canTalk;
 
 	/** whisper()出来る時間帯か否か */
-	boolean canWhisper;
+    boolean canWhisper;
 
 	/** 最新のゲーム情報 */
 	GameInfo currentGameInfo;
@@ -135,8 +135,8 @@ public class MyBasePlayer implements Player {
 	 * @return
 	 */
 	protected boolean isHuman(Agent agent) {
-		return humans.contains(agent);
-	}
+        return humans.contains(agent);
+    }
 
 	/**
 	 * エージェントが人狼かどうかを返す
@@ -261,7 +261,7 @@ public class MyBasePlayer implements Player {
 
 
 	/**
-	 * @param agent
+	 * @param
 	 */
 	private void addKilledAgent(Agent killedAgent) {
 		// TODO 自動生成されたメソッド・スタブ
